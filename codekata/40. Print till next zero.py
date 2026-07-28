@@ -15,3 +15,18 @@ if(count>1):
 else:
     print(-1)
 
+"""
+n = int(input())
+arr = input().split()
+
+try:
+    first = arr.index('0')
+    second = arr.index('0', first + 1)
+
+    if second == first + 1:
+        print(-1)
+    else:
+        print(" ".join(arr[first + 1:second]))
+except ValueError:
+    print(-1)
+"""
