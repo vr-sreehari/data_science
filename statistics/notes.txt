@@ -1,0 +1,76 @@
+Statistics: -> Raw information into meaningful insights
+
+Data -> A set of facts, measurements or observations
+eg: Readings, Medical Reports, Customer feedback, GPS, Social Media Posts, Stock, Population
+
+1.Quantitative -> Numeric Data
+    continuous
+    discrete
+2.Qualitative -> Non-numeric Data
+    Nominal
+    Ordinal
+
+Levels of measurements
+1.Nominal Scale
+2.Ordinal Scale
+3.Interval Scale
+4.Ratio Scale
+
+**********************************************************************************************
+Data Collections and Organization
+
+Primary Data Collections
+online survey, mail survey, phone survey, experiment, observations
+
+Secondary Data Collections:
+Gov data, sales analysis, research articles
+
+Population ->
+Sample ->
+
+Organizing data: improved data quality, enhanced efficiency, better insights, informed decision making, collaboration
+eg:library
+
+Frequency and Contingency table
+
+Graphical Forms: Pie, Bar, Histogram
+
+**********************************************************************************************
+Descriptive Statistics-> summary or description of our data
+
+Central Tendency->centre most value of data
+->Mean(average), Median, Mode
+
+Outliers-> detecting abnormal values
+
+**********************************************************************************************
+Measures of Dispersion
+1.Measures of Spread data
+2.Understanding Normal Distribution
+3.Skewness and central Tendency
+
+Range
+Variance
+Standard deviation
+
+Normal Distribution
+skewness ->lack of symmetry in disctribution
+**********************************************************************************************
+Quartiles and IQR-> when median is the measure of centre
+(inter quartile range)
+
+**********************************************************************************************
+Inferential Statistics
+Hypothesis Testing
+    Null Hypothesis
+    Alternate Hypothesis
+    p-value
+
+**********************************************************************************************
+
+
+
+
+
+
+
