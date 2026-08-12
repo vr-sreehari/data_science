@@ -86,4 +86,55 @@ total possibilities = 36
 probability (A|B) = P(AnB)/P(B) = 6n3/36 = 3/36 = 1/12/1/2 = 1/6
 
 probability = 1/6
+ans:
+3/18 = 1/6
 **********************************************************************************************
+Manufacture:
+New -> 60% -> 98%-Good 2%-Defect
+Old -> 40% -> 95%-Good 5%-Defect
+
+Defect product from old machine probability?
+A->Production from old machine
+B->Produced defect product
+P(A|B) = P(B|A) P(A) / P(B)
+P(A) = 0.40
+P(B) = 0.05
+P(B|A) = 0.02
+P(A|B) = 0.02 * 0.40 / 0.05
+       = 0.008/0.05
+       = 0.16 -> 16% chance
+
+**********************************************************************************************
+Probability Distribution
+1.Binomial -> fixed iteration
+2.Poisson -> fixed Interval
+
+Normal Distribution (Gaussian)
+Parameters - Mean, Standard deviation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
