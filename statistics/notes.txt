@@ -111,6 +111,60 @@ Probability Distribution
 
 Normal Distribution (Gaussian)
 Parameters - Mean, Standard deviation
+**********************************************************************************************
+Descriptive & Inferential Statistics
+
+Types of Statistics
+1.Descriptive - analysing raw data
+2.Inferential - predict future performance with past data
+
+Descriptive -> Central Tendency - Mean,Median,Mode
+    Spread -> Range, Variance, Standard Deviation
+    Outliers
+
+Percentile -> discussing about the percentage place like 10%
+Quartile -> 25% -Q1 50%-Q2 75%-Q3
+
+IQR = Q3-Q1
+
+Lower Boundary -> Q1 - 1.5*IQR
+Upper Boundary -> Q3 + 1.5*IQR
+beyond LB and UB everything is outliers
+
+Inferential:
+Population -> Entire Group
+Sample -> portion of data -> prob & non-prob
+
+Probability Sampling:
+1.Random
+2.Systematic
+3.Cluster
+4.Stratified
+
+Non Probability Sampling:
+1.Convinience 
+2.Judgement/purposive
+3.Snowball
+4.Quota
+
+Sample done-> outcome
+Point Estimate - giving an single point outcome
+Confident interval - giving a range of values
+Confident level - 90,95,99%
+
+Interview -> CLT - Central Limit Theorem - if repeatedly take random sample of same sample size, the distribution of sample means are appx Normal
+conditions - Random, independent, large appx >30
+
+Parameter vs Statistic
+Population - mean and SD -> Parameter
+Sample - mean and SD -> Statistic
+
+Confident Interval CI 
+Point Estimate PE+-ME - Margin of error
+
+**********************************************************************************************
+
+
 
 
 
