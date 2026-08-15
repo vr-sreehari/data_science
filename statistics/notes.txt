@@ -164,6 +164,13 @@ Point Estimate PE+-ME - Margin of error
 
 **********************************************************************************************
 
+Hypothesis
+H0-Null Hypothesis
+H1-Alternate Hypothesis
+
+one-two tailed Hypothesis
+type 1(false +ve) type 2(false -ve) errors
+
 
 
 
