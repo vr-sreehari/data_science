@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feature Encoding — Interactive Session Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary:#0062a8; --navy:#333f70; --primary-lt:#e8f2fc; --primary-md:#bfdbfe;
+  --bg:#f0f4fa; --surface:#fff; --border:#dde6f0; --text:#1a2540; --muted:#5a6a85; --faint:#94a3b8;
+  --bin:#f59e0b; --bin-lt:#fffbeb; --bin-md:#fde68a;
+  --ord:#059669; --ord-lt:#ecfdf5; --ord-md:#a7f3d0;
+  --nom:#7c3aed; --nom-lt:#f5f3ff; --nom-md:#ddd6fe;
+  --emb:#e11d48; --emb-lt:#fff1f2; --emb-md:#fecdd3;
+  --keep:#059669; --drop:#dc2626; --warn:#b45309;
+  --keep-lt:#ecfdf5; --drop-lt:#fef2f2; --warn-lt:#fffbeb;
+  --r:14px; --r-lg:20px;
+  --shadow:0 2px 12px rgba(0,0,0,.06);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;font-size:14px}
+h1,h2,h3,h4,h5{font-family:'Fraunces',serif;line-height:1.2}
+code,pre{font-family:'JetBrains Mono',monospace}
+button{font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer}
+a{color:inherit;text-decoration:none}
+
+/* ── SHELL ─────────────────────────────────────────────── */
+.shell{display:flex;height:100vh;overflow:hidden}
+
+/* ── SIDEBAR ────────────────────────────────────────────── */
+.sidebar{
+  width:220px;flex-shrink:0;background:var(--navy);
+  display:flex;flex-direction:column;
+  padding:0 0 24px;position:relative;z-index:10;
+  box-shadow:2px 0 20px rgba(0,0,0,.15)
+}
+.sidebar-logo{
+  padding:22px 20px 18px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  margin-bottom:10px;
+}
+.sidebar-logo-title{
+  font-family:'Fraunces',serif;font-size:15px;font-weight:800;
+  color:#fff;letter-spacing:-.01em;line-height:1.2
+}
+.sidebar-logo-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;letter-spacing:.05em;text-transform:uppercase}
+.sidebar-section{padding:8px 12px 4px;font-size:9px;font-weight:700;color:rgba(255,255,255,.25);letter-spacing:.12em;text-transform:uppercase;margin-top:8px}
+.sb-btn{
+  display:flex;align-items:center;gap:10px;
+  margin:2px 10px;padding:10px 12px;
+  border:none;border-radius:10px;
+  background:transparent;color:rgba(255,255,255,.55);
+  font-size:13px;font-weight:500;
+  transition:all .18s;text-align:left;width:calc(100% - 20px)
+}
+.sb-btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.sb-btn.active{background:rgba(255,255,255,.14);color:#fff;font-weight:700}
+.sb-icon{font-size:16px;flex-shrink:0;width:22px;text-align:center}
+.sb-divider{height:1px;background:rgba(255,255,255,.07);margin:12px 16px}
+
+/* ── MAIN ───────────────────────────────────────────────── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* ── TOPIC TABS ─────────────────────────────────────────── */
+.topic-bar{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:0 32px;
+  display:flex;align-items:center;gap:4px;
+  flex-shrink:0;
+  box-shadow:var(--shadow)
+}
+.t-tab{
+  padding:14px 16px;background:transparent;border:none;
+  font-size:12px;font-weight:700;letter-spacing:.04em;
+  color:var(--muted);border-bottom:2px solid transparent;
+  margin-bottom:-1px;transition:all .18s;
+  display:flex;align-items:center;gap:6px;white-space:nowrap
+}
+.t-tab:hover{color:var(--text)}
+.t-tab.active{border-bottom-color:var(--primary);color:var(--primary)}
+.t-tab .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.t-home{margin-left:auto;padding:8px 14px;background:var(--primary);border:none;border-radius:8px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.04em;transition:background .18s}
+.t-home:hover{background:var(--navy)}
+
+/* ── CONTENT AREA ───────────────────────────────────────── */
+.content{flex:1;overflow-y:auto;padding:0}
+.content::-webkit-scrollbar{width:5px}
+.content::-webkit-scrollbar-thumb{background:#c9d7ea;border-radius:3px}
+
+/* ── ANIMATIONS ─────────────────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.fade-up{animation:fadeUp .3s ease forwards}
+.fade-up-1{animation:fadeUp .3s .05s ease both}
+.fade-up-2{animation:fadeUp .3s .1s ease both}
+.fade-up-3{animation:fadeUp .3s .15s ease both}
+.fade-up-4{animation:fadeUp .3s .2s ease both}
+
+/* ══ PAGE COMPONENTS ════════════════════════════════════════ */
+
+/* Hero strip */
+.hero{
+  background:linear-gradient(135deg,var(--navy) 0%,var(--primary) 65%,#0086d4 100%);
+  color:#fff;padding:48px 40px 44px;position:relative;overflow:hidden
+}
+.hero::after{content:'';position:absolute;top:-60px;right:-60px;width:320px;height:320px;
+  background:rgba(255,255,255,.04);border-radius:50%}
+.hero::before{content:'';position:absolute;bottom:-80px;right:120px;width:200px;height:200px;
+  background:rgba(255,255,255,.03);border-radius:50%}
+.hero-tag{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.45);margin-bottom:12px}
+.hero-title{font-family:'Fraunces',serif;font-size:42px;font-weight:900;line-height:1.08;
+  margin-bottom:16px;position:relative}
+.hero-title em{font-style:normal;color:#7ec8f0}
+.hero-desc{font-size:15px;line-height:1.8;color:rgba(255,255,255,.78);max-width:580px;position:relative}
+
+/* Overview section cards (square with rounded corners) */
+.ov-cards-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
+  padding:40px 40px;
+}
+.ov-card{
+  aspect-ratio:1;border-radius:20px;background:var(--surface);
+  border:1.5px solid var(--border);padding:24px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  cursor:pointer;transition:all .22s;position:relative;overflow:hidden
+}
+.ov-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:20px 20px 0 0}
+.ov-card.bin::before{background:var(--bin)}
+.ov-card.ord::before{background:var(--ord)}
+.ov-card.nom::before{background:var(--nom)}
+.ov-card.emb::before{background:var(--emb)}
+.ov-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px);border-color:transparent}
+.ov-card-num{font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+.ov-card-emoji{font-size:32px;margin:8px 0}
+.ov-card-title{font-family:'Fraunces',serif;font-size:17px;font-weight:800;color:var(--navy);margin-bottom:6px}
+.ov-card-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.ov-card-arrow{font-size:18px;color:var(--faint);transition:transform .18s}
+.ov-card:hover .ov-card-arrow{transform:translate(4px,-4px);color:var(--primary)}
+
+/* Body content */
+.body-pad{padding:0 40px 40px}
+
+/* Why-box */
+.why-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:28px 32px;margin-bottom:28px}
+.why-box h2{font-family:'Fraunces',serif;font-size:20px;font-weight:800;color:var(--navy);margin-bottom:12px}
+.why-box p{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:10px}
+.why-box p:last-child{margin-bottom:0}
+
+/* Section header inside content */
+.sec-hero{padding:36px 40px 28px;background:var(--surface);border-bottom:1px solid var(--border);margin-bottom:0}
+.sec-hero-tag{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px}
+.sec-hero-title{font-family:'Fraunces',serif;font-size:32px;font-weight:900;color:var(--navy);margin-bottom:10px;line-height:1.1}
+.sec-hero-desc{font-size:14px;color:var(--muted);line-height:1.8;max-width:620px}
+.sec-body{padding:28px 40px 48px}
+
+/* Technique cards */
+.technique{background:var(--surface);border:1px solid var(--border);border-radius:16px;margin-bottom:20px;overflow:hidden;transition:box-shadow .2s}
+.technique:hover{box-shadow:var(--shadow-lg)}
+.tech-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px}
+.tech-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.tech-name{font-family:'Fraunces',serif;font-size:18px;font-weight:800;color:var(--navy)}
+.tech-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.tech-body{padding:20px 24px}
+.tech-2col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.tech-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:10px}
+.tech-text{font-size:13px;color:var(--text);line-height:1.7}
+.tech-text p{margin-bottom:8px}
+.tech-text p:last-child{margin-bottom:0}
+
+/* Code block */
+.code-block{background:#1e2a3a;border-radius:10px;padding:16px 18px;margin:12px 0;overflow-x:auto}
+.code-block pre{font-size:12px;line-height:1.7;color:#e2e8f0;white-space:pre}
+.code-comment{color:#64748b}
+.code-kw{color:#7ec8f0}
+.code-str{color:#a3e635}
+.code-fn{color:#fbbf24}
+.code-num{color:#f87171}
+
+/* Chips */
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chip{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.04em}
+.chip-pro{background:#dcfce7;color:#15803d}
+.chip-con{background:#fee2e2;color:#991b1b}
+.chip-note{background:#dbeafe;color:#1e40af}
+
+/* Divider section label */
+.section-divider{display:flex;align-items:center;gap:12px;margin:28px 0 18px}
+.section-divider-line{flex:1;height:1px;background:var(--border)}
+.section-divider-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);white-space:nowrap}
+
+/* Comparison box */
+.vs-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px}
+.vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.vs-col{border-radius:12px;padding:18px}
+.vs-col-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.vs-item{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;font-size:12px;line-height:1.5}
+.vs-dot{width:5px;height:5px;border-radius:50%;margin-top:5px;flex-shrink:0}
+
+/* Alert/callout box */
+.callout{border-radius:12px;padding:16px 18px;margin:16px 0;display:flex;gap:12px;align-items:flex-start}
+.callout-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.callout-body .callout-title{font-size:12px;font-weight:700;margin-bottom:4px;letter-spacing:.04em}
+.callout-body p{font-size:13px;line-height:1.6;color:var(--text)}
+.callout.warn{background:#fffbeb;border:1px solid #fde68a}
+.callout.danger{background:#fef2f2;border:1px solid #fecaca}
+.callout.info{background:#eff6ff;border:1px solid #bfdbfe}
+.callout.success{background:#ecfdf5;border:1px solid #a7f3d0}
+
+/* ══ DECISION TREE ══════════════════════════════════════════ */
+.tree-wrap{max-width:580px;margin:0 auto}
+.tree-breadcrumb{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;min-height:28px}
+.bc-item{font-size:11px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:3px 11px;color:var(--muted)}
+.bc-yes{color:var(--keep);font-weight:700}
+.bc-no{color:var(--drop);font-weight:700}
+.tree-node{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:30px;margin-bottom:14px;transition:all .25s}
+.tree-node.result-keep{border-color:var(--ord-md);background:var(--ord-lt)}
+.tree-node.result-drop{border-color:var(--bin-md);background:var(--bin-lt)}
+.tree-node.result-warn{border-color:var(--nom-md);background:var(--nom-lt)}
+.tree-node.result-emb{border-color:var(--emb-md);background:var(--emb-lt)}
+.tree-step-num{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:10px}
+.tree-question{font-family:'Fraunces',serif;font-size:19px;font-weight:800;color:var(--navy);line-height:1.4;margin-bottom:8px}
+.tree-hint{font-size:12px;color:var(--muted);background:var(--bg);border-radius:8px;padding:9px 13px;margin-bottom:22px;border-left:2px solid var(--border)}
+.tree-actions{display:flex;gap:10px}
+.tree-btn{flex:1;padding:13px;border-radius:10px;border:1.5px solid;font-size:13px;font-weight:700;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.tree-btn.yes{background:var(--ord-lt);border-color:var(--ord-md);color:var(--ord)}
+.tree-btn.yes:hover{background:#d1fae5}
+.tree-btn.no{background:var(--bg);border-color:var(--border);color:var(--text)}
+.tree-btn.no:hover{background:var(--surface)}
+.tree-result-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:12px}
+.tree-result-title{font-family:'Fraunces',serif;font-size:26px;font-weight:900;margin-bottom:12px}
+.tree-result-msg{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:16px}
+.result-badge{display:inline-block;padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.06em}
+.rb-green{background:#d1fae5;color:#065f46}
+.rb-amber{background:#fef3c7;color:#92400e}
+.rb-violet{background:#ede9fe;color:#5b21b6}
+.rb-rose{background:#ffe4e6;color:#9f1239}
+.rb-blue{background:#dbeafe;color:#1e40af}
+.tree-controls{display:flex;gap:8px;margin-top:4px}
+.tree-ctrl{padding:8px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:12px;font-weight:600;transition:all .15s}
+.tree-ctrl:hover{border-color:var(--primary);color:var(--primary)}
+
+/* ══ COMPARISON TABLE ═══════════════════════════════════════ */
+.cmp-hdr{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.cmp-table{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.cmp-row{display:grid;padding:13px 20px;gap:12px;border-bottom:1px solid var(--border);align-items:center;transition:background .15s}
+.cmp-row:last-child{border-bottom:none}
+.cmp-row:hover{background:var(--bg)}
+.cmp-row.head{background:var(--bg);padding:10px 20px}
+.cmp-tech{font-weight:700;color:var(--navy);font-size:12px}
+.cmp-cell{font-size:12px;color:var(--text)}
+.cmp-cell.muted{color:var(--muted)}
+.pill{display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700}
+.pill-y{background:#dcfce7;color:#15803d}
+.pill-n{background:#f1f5f9;color:#64748b}
+.pill-h{background:#fee2e2;color:#991b1b}
+.pill-m{background:#fef3c7;color:#92400e}
+.pill-l{background:#eff6ff;color:#1d4ed8}
+
+/* ══ QUIZ ════════════════════════════════════════════════════ */
+.quiz-progress{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:16px}
+.quiz-prog-bar{flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden}
+.quiz-prog-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--navy));border-radius:3px;transition:width .4s ease}
+.quiz-prog-text{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:14px;transition:box-shadow .2s}
+.q-card:hover{box-shadow:var(--shadow)}
+.q-number{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:10px}
+.q-text{font-family:'Fraunces',serif;font-size:16px;font-weight:700;color:var(--navy);line-height:1.55;margin-bottom:16px}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{display:flex;align-items:center;gap:10px;padding:11px 15px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;text-align:left;width:100%;transition:all .15s}
+.q-opt:hover:not(:disabled){border-color:var(--primary);background:var(--primary-lt)}
+.q-opt.selected{border-color:var(--primary);background:var(--primary-lt);color:var(--primary)}
+.q-opt.correct{border-color:var(--ord-md);background:var(--ord-lt);color:var(--ord)}
+.q-opt.wrong{border-color:var(--bin-md);background:var(--bin-lt);color:var(--drop)}
+.q-opt:disabled{cursor:default}
+.q-marker{font-size:13px;flex-shrink:0;width:18px}
+.q-explain{margin-top:12px;padding:12px 16px;background:var(--primary-lt);border-radius:9px;border-left:3px solid var(--primary);font-size:12px;color:var(--navy);line-height:1.7}
+.q-explain::before{content:'💡  '}
+.quiz-footer{margin-top:8px}
+.submit-btn{padding:12px 30px;background:var(--primary);border:none;border-radius:10px;color:#fff;font-weight:700;font-size:13px;transition:background .18s}
+.submit-btn:hover{background:var(--navy)}
+.submit-btn:disabled{background:#cbd5e1;cursor:not-allowed}
+.score-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;text-align:center;margin-bottom:20px}
+.score-big{font-family:'Fraunces',serif;font-size:56px;font-weight:900;color:var(--navy)}
+.score-denom{font-size:20px;color:var(--faint)}
+.score-msg{font-size:15px;color:var(--muted);margin-top:8px;margin-bottom:20px}
+.retry-btn{padding:10px 24px;background:transparent;border:2px solid var(--primary);border-radius:10px;color:var(--primary);font-weight:700;font-size:13px;transition:all .18s}
+.retry-btn:hover{background:var(--primary);color:#fff}
+
+/* ══ RESPONSIVE ═════════════════════════════════════════════ */
+@media(max-width:900px){.ov-cards-grid{grid-template-columns:1fr 1fr}.tech-2col{grid-template-columns:1fr}}
+@media(max-width:640px){.sidebar{display:none}.ov-cards-grid{grid-template-columns:1fr 1fr}.hero-title{font-size:28px}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ═══ SIDEBAR ══════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-title">Feature<br>Encoding</div>
+    <div class="sidebar-logo-sub">Session Guide · DS</div>
+  </div>
+
+  <div class="sidebar-section">Navigation</div>
+  <button class="sb-btn active" id="sb-overview" onclick="setView('overview')">
+    <span class="sb-icon">🏠</span> Overview
+  </button>
+  <button class="sb-btn" id="sb-tree" onclick="setView('tree')">
+    <span class="sb-icon">🌳</span> Decision Tree
+  </button>
+  <button class="sb-btn" id="sb-compare" onclick="setView('compare')">
+    <span class="sb-icon">📊</span> Comparison
+  </button>
+  <button class="sb-btn" id="sb-quiz" onclick="setView('quiz')">
+    <span class="sb-icon">🧠</span> Quiz
+  </button>
+
+  <div class="sb-divider"></div>
+  <div class="sidebar-section">Topics</div>
+  <button class="sb-btn" onclick="goTopic('binary')">
+    <span class="sb-icon" style="color:var(--bin)">⬤</span> Binary Features
+  </button>
+  <button class="sb-btn" onclick="goTopic('ordinal')">
+    <span class="sb-icon" style="color:var(--ord)">⬤</span> Ordinal
+  </button>
+  <button class="sb-btn" onclick="goTopic('nominal')">
+    <span class="sb-icon" style="color:var(--nom)">⬤</span> Nominal
+  </button>
+  <button class="sb-btn" onclick="goTopic('embeddings')">
+    <span class="sb-icon" style="color:var(--emb)">⬤</span> Embeddings
+  </button>
+</aside>
+
+<!-- ═══ MAIN ════════════════════════════════════════════ -->
+<div class="main">
+
+  <!-- Top topic tabs -->
+  <div class="topic-bar" id="topic-bar">
+    <button class="t-tab" id="tab-binary"     onclick="goTopic('binary')">
+      <span class="dot" style="background:var(--bin)"></span>Binary Features
+    </button>
+    <button class="t-tab" id="tab-ordinal"    onclick="goTopic('ordinal')">
+      <span class="dot" style="background:var(--ord)"></span>Ordinal
+    </button>
+    <button class="t-tab" id="tab-nominal"    onclick="goTopic('nominal')">
+      <span class="dot" style="background:var(--nom)"></span>Nominal
+    </button>
+    <button class="t-tab" id="tab-embeddings" onclick="goTopic('embeddings')">
+      <span class="dot" style="background:var(--emb)"></span>Embeddings
+    </button>
+    <button class="t-home" onclick="setView('overview')">← Overview</button>
+  </div>
+
+  <!-- Content -->
+  <div class="content" id="content"></div>
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+const S = {
+  view: 'overview', // 'overview' | 'content' | 'tree' | 'compare' | 'quiz'
+  topic: 'binary',  // 'binary' | 'ordinal' | 'nominal' | 'embeddings'
+  tree: { cur: 'q1', hist: [] },
+  quiz: { ans: {}, done: false },
+};
+
+// ═══════════════════════════════════════════════════════════
+// DECISION TREE DATA
+// ═══════════════════════════════════════════════════════════
+const TREE = {
+  start: 'q1',
+  nodes: {
+    q1: { q: 'Does the feature have only 2 unique values?',
+          hint: 'e.g., Yes/No, Male/Female, True/False, 0/1, Churned/Not Churned',
+          yes: 'r_binary', no: 'q2' },
+    q2: { q: 'Does the feature have a natural, meaningful order?',
+          hint: 'e.g., Low < Medium < High, or Cold < Warm < Hot — order carries real-world meaning',
+          yes: 'r_ordinal', no: 'q3' },
+    q3: { q: 'How many unique values does the feature have?',
+          hint: 'Rule of thumb: Low = fewer than 10–15 unique values; High = 15 or more',
+          yes: 'r_ohe', no: 'q4',
+          yesLabel: 'Low (< 10–15)', noLabel: 'High (15+)' },
+    q4: { q: 'Are you using a tree-based model (XGBoost, RF, DT)?',
+          hint: 'Tree models can handle frequency/target encoded features better than linear models',
+          yes: 'q5', no: 'q6' },
+    q5: { q: 'Is there a strong, meaningful relationship between this feature and the target?',
+          hint: 'Domain knowledge: does this category correlate strongly with what you\'re predicting?',
+          yes: 'r_target', no: 'r_freq' },
+    q6: { q: 'Are you building a neural network or deep learning model?',
+          hint: 'Neural networks can learn dense representations through embedding layers',
+          yes: 'r_embed', no: 'r_binary_enc' },
+    r_binary:     { result: true, cls: 'result-keep', badge: 'rb-green',  verdict: '0 / 1 Direct Mapping',  msg: 'Map the two categories directly to 0 and 1. Simple, lossless, and model-agnostic. No encoding library needed — use .map() or replace().' },
+    r_ordinal:    { result: true, cls: 'result-keep', badge: 'rb-green',  verdict: 'Ordinal Encoding',       msg: 'Assign integers that respect the natural order. Define the order explicitly using OrdinalEncoder(categories=[[...]]). Never use LabelEncoder here — it assigns arbitrary integers.' },
+    r_ohe:        { result: true, cls: 'result-keep', badge: 'rb-green',  verdict: 'One-Hot Encoding',       msg: 'Create a binary column per category. Simple and model-agnostic. Watch for the dummy variable trap with linear models — drop one column (drop_first=True). Avoid for high cardinality.' },
+    r_freq:       { result: true, cls: 'result-drop', badge: 'rb-amber',  verdict: 'Frequency Encoding',     msg: 'Replace each category with how often it appears in the dataset. No leakage, compact, handles unseen categories gracefully. Best baseline for high-cardinality nominal features.' },
+    r_target:     { result: true, cls: 'result-warn', badge: 'rb-amber',  verdict: 'Target Encoding (w/ CV)', msg: 'Replace each category with the mean of the target. Very powerful for strong category-target relationships. MUST use cross-validation (k-fold) encoding to prevent data leakage. Apply smoothing for rare categories.' },
+    r_embed:      { result: true, cls: 'result-emb',  badge: 'rb-rose',   verdict: 'Embeddings',             msg: 'Use learned dense vector representations via an Embedding layer. Ideal for very high cardinality (user IDs, product IDs) in neural networks. Captures semantic relationships between categories.' },
+    r_binary_enc: { result: true, cls: 'result-warn', badge: 'rb-violet', verdict: 'Binary Encoding',        msg: 'Convert category index to binary bits across multiple columns. Far fewer columns than OHE (log₂ columns instead of N). Good for linear models with high cardinality where OHE would explode dimensions.' },
+  }
+};
+
+// ═══════════════════════════════════════════════════════════
+// COMPARISON DATA
+// ═══════════════════════════════════════════════════════════
+const COMPARE_COLS = '2fr 1fr 1fr 1fr 1fr 1fr 2fr';
+const COMPARE_HEADS = ['Technique','Type','High Card.','Order','Leakage','Dims','Best For'];
+const COMPARE_ROWS = [
+  { tech:'0/1 Direct Mapping',    type:'Binary',   hi:'N/A',    ord:'N/A',    leak:'None',  dims:'0 added',   best:'Any binary yes/no feature',           tc:'bin' },
+  { tech:'One-Hot Encoding',      type:'Nominal',  hi:'❌ No',   ord:'❌ No',  leak:'None',  dims:'N cols',    best:'Low cardinality (< 10–15 values)',     tc:'nom' },
+  { tech:'Ordinal Encoding',      type:'Ordinal',  hi:'⚠️ Care', ord:'✅ Yes', leak:'None',  dims:'1 col',     best:'Features with meaningful order',       tc:'ord' },
+  { tech:'Label Encoding',        type:'Any',      hi:'❌ No',   ord:'❌ No',  leak:'None',  dims:'1 col',     best:'Target variable only (not features)',   tc:'ord' },
+  { tech:'Frequency Encoding',    type:'Nominal',  hi:'✅ Yes',  ord:'❌ No',  leak:'Low',   dims:'1 col',     best:'High cardinality — tree models',        tc:'nom' },
+  { tech:'Target Encoding',       type:'Nominal',  hi:'✅ Yes',  ord:'❌ No',  leak:'⚠️ High','dims':'1 col',  best:'High card. + strong target relation',   tc:'nom' },
+  { tech:'Binary Encoding',       type:'Nominal',  hi:'✅ Yes',  ord:'❌ No',  leak:'None',  dims:'log₂ N',    best:'High card. — linear models',            tc:'nom' },
+  { tech:'Hash Encoding',         type:'Nominal',  hi:'✅ Yes',  ord:'❌ No',  leak:'None',  dims:'Fixed N',   best:'Very high cardinality — collisions OK', tc:'nom' },
+  { tech:'Embeddings',            type:'Any',      hi:'✅ Yes',  ord:'Learned',leak:'None',  dims:'k dims',    best:'Neural networks — very high cardinality',tc:'emb'},
+];
+
+// ═══════════════════════════════════════════════════════════
+// QUIZ DATA
+// ═══════════════════════════════════════════════════════════
+const QUIZ = [
+  { q: 'A "Gender" column has values Male / Female. What is the best encoding?',
+    opts: ['One-Hot Encoding (2 columns)', 'Ordinal Encoding', 'Direct 0/1 mapping', 'Frequency Encoding'],
+    ans: 2, exp: 'Binary features need no complex encoding. A direct 0/1 map (Male=0, Female=1) is lossless, compact, and works with every model. OHE would create a redundant second column.' },
+  { q: 'A "Size" column has values: Small, Medium, Large, XL. Which encoding correctly preserves meaning?',
+    opts: ['Label Encoding (arbitrary order)', 'One-Hot Encoding', 'Ordinal Encoding with defined order', 'Frequency Encoding'],
+    ans: 2, exp: 'Ordinal Encoding with OrdinalEncoder(categories=[[\'Small\',\'Medium\',\'Large\',\'XL\']]) preserves the natural order. Label Encoding assigns arbitrary integers and could imply XL < Small.' },
+  { q: 'A "City" column has 450 unique values. You\'re building a Random Forest model. Best approach?',
+    opts: ['One-Hot Encoding (450 columns)', 'Ordinal Encoding', 'Frequency Encoding', 'Target Encoding without cross-validation'],
+    ans: 2, exp: 'Frequency encoding compactly replaces each city with its occurrence frequency. It\'s leakage-free, handles unseen categories gracefully, and tree models can leverage frequency signal effectively.' },
+  { q: 'What is the PRIMARY risk of using Target Encoding without cross-validation?',
+    opts: ['It creates too many new columns', 'It cannot handle missing values', 'It causes data leakage — target information contaminates the features', 'It only works with linear models'],
+    ans: 2, exp: 'Without k-fold cross-validation, you compute the mean target using the same rows you\'re encoding. This leaks target information into features, inflating training metrics and causing the model to overfit.' },
+  { q: 'A "Country" column has 12 unique values with no natural order. Best encoding?',
+    opts: ['Ordinal Encoding', 'One-Hot Encoding', 'Frequency Encoding', 'Binary Encoding'],
+    ans: 1, exp: 'With only 12 values, One-Hot Encoding is appropriate. It creates no false ordinal assumptions and keeps dimensionality manageable. Remember to drop one column (drop_first=True) for linear models.' },
+  { q: 'What is the KEY difference between Ordinal Encoding and Label Encoding?',
+    opts: ['Label Encoding is always faster', 'Ordinal Encoding preserves a meaningful order; Label Encoding assigns integers arbitrarily', 'Label Encoding handles more categories', 'They are the same technique with different names'],
+    ans: 1, exp: 'Ordinal Encoding lets you define the exact order (e.g., Low=1, Med=2, High=3). Label Encoding assigns integers based on alphabetical or appearance order — accidentally implying a false order if used on features.' },
+  { q: 'Binary Encoding of 16 unique categories produces how many columns?',
+    opts: ['16 columns (same as OHE)', '8 columns', '4 columns', '2 columns'],
+    ans: 2, exp: 'Binary Encoding converts category index to binary bits. 16 categories need log₂(16) = 4 bits = 4 columns. Compare: One-Hot Encoding would create 16 columns. Binary Encoding is dramatically more compact.' },
+  { q: 'A "Product Category" has 2,000 unique values. You\'re training a deep learning model. Best approach?',
+    opts: ['One-Hot Encoding (2,000 columns)', 'Frequency Encoding', 'Hash Encoding', 'Learned Embeddings'],
+    ans: 3, exp: 'Embeddings (via an Embedding layer in Keras/PyTorch) learn dense k-dimensional representations for each category. They capture semantic relationships between categories and scale to any cardinality without exploding dimensions.' },
+  { q: 'Which encoding technique is most prone to overfitting on rare categories?',
+    opts: ['One-Hot Encoding', 'Frequency Encoding', 'Target Encoding', 'Ordinal Encoding'],
+    ans: 2, exp: 'Target Encoding replaces a category with the mean target value. For rare categories (only 1–2 rows), this mean is highly unstable and essentially memorizes the target. Solutions: smoothing (blend with global mean) or k-fold target encoding.' },
+  { q: '"Education Level" has values: High School, Bachelor\'s, Master\'s, PhD. A linear regression model predicts salary. Which is WRONG to do?',
+    opts: ['OrdinalEncoder with [HS, Bachelor, Master, PhD] mapping', 'Custom integer mapping in order: 1,2,3,4', 'LabelEncoder (letting it assign random integers)', 'Neither — both ordinal approaches are fine'],
+    ans: 2, exp: 'Label Encoding might assign PhD=0, Bachelor=1, Master=2, HS=3 — implying PhD earns least. For ordinal features fed into linear models, the order of integers directly affects predictions. Always define order explicitly with OrdinalEncoder.' },
+];
+
+// ═══════════════════════════════════════════════════════════
+// CONTENT HTML — BINARY
+// ═══════════════════════════════════════════════════════════
+function buildBinary() {
+  return `
+<div class="sec-hero fade-up">
+  <div class="sec-hero-tag" style="color:var(--bin)">⬤ Binary Features</div>
+  <h1 class="sec-hero-title">Encoding Binary Features</h1>
+  <div class="sec-hero-desc">Binary features have exactly two possible values. They require the simplest encoding — but choosing the right method still matters for model interpretability and compatibility.</div>
+</div>
+<div class="sec-body">
+
+  <!-- WHAT ARE BINARY FEATURES -->
+  <div class="technique fade-up-1">
+    <div class="tech-header">
+      <div class="tech-icon" style="background:var(--bin-lt)">🔀</div>
+      <div>
+        <div class="tech-name">What Are Binary Features?</div>
+        <div class="tech-sub">Features with exactly 2 unique values</div>
+      </div>
+    </div>
+    <div class="tech-body">
+      <div class="tech-2col">
+        <div>
+          <div class="tech-label">Common Examples</div>
+          <div class="tech-text">
+            <p>• <strong>Yes / No</strong> — "Did the customer churn?"</p>
+            <p>• <strong>Male / Female</strong> — Gender column</p>
+            <p>• <strong>True / False</strong> — Is the user subscribed?</p>
+            <p>• <strong>Passed / Failed</strong> — Exam result</p>
+            <p>• <strong>0 / 1</strong> — Already encoded (no action needed)</p>
+          </div>
+        </div>
+        <div>
+          <div class="tech-label">Why They're Special</div>
+          <div class="tech-text">
+            <p>Binary features are a special case of nominal encoding. Since there are only two values, One-Hot Encoding creates a redundant second column. A simple 0/1 mapping is always sufficient — no library needed.</p>
+          </div>
+          <div class="callout info" style="margin-top:12px">
+            <div class="callout-icon">💡</div>
+            <div class="callout-body">
+              <div class="callout-title">Rule</div>
+              <p>If a column has exactly 2 unique values → always use direct 0/1 mapping. Simpler is better.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TECHNIQUE 1: DIRECT MAPPING -->
+  <div class="technique fade-up-2">
+    <div class="tech-header">
+      <div class="tech-icon" style="background:var(--ord-lt)">✅</div>
+      <div>
+        <div class="tech-name">Technique 1 — Direct 0 / 1 Mapping</div>
+        <div class="tech-sub">The standard approach for all binary features</div>
+      </div>
+    </div>
+    <div class="tech-body">
+      <div class="tech-2col">
+        <div>
+          <div class="tech-label">When to Use</div>
+          <div class="tech-text">
+            <p>Always use this for binary features. It is model-agnostic, lossless, and creates no additional columns. The choice of which value maps to 0 or 1 doesn't affect model performance — only interpretability.</p>
+          </div>
+          <div class="chips">
+            <span class="chip chip-pro">✓ No extra columns</span>
+            <span class="chip chip-pro">✓ All models</span>
+            <span class="chip chip-pro">✓ Lossless</span>
+            <span class="chip chip-note">Interpretable</span>
+          </div>
+        </div>
+        <div>
+          <div class="tech-label">Code</div>
+          <div class="code-block"><pre><span class="code-comment"># Option 1 — using .map()</span>
+<span class="code-fn">df</span>[<span class="code-str">'churned'</span>] = <span class="code-fn">df</span>[<span class="code-str">'churned'</span>].<span class="code-fn">map</span>({
+    <span class="code-str">'Yes'</span>: <span class="code-num">1</span>, <span class="code-str">'No'</span>: <span class="code-num">0</span>
+})
+
+<span class="code-comment"># Option 2 — using replace()</span>
+<span class="code-fn">df</span>[<span class="code-str">'gender'</span>] = <span class="code-fn">df</span>[<span class="code-str">'gender'</span>].<span class="code-fn">replace</span>({
+    <span class="code-str">'Male'</span>: <span class="code-num">0</span>, <span class="code-str">'Female'</span>: <span class="code-num">1</span>
+})
+
+<span class="code-comment"># Option 3 — already boolean, just cast</span>
+<span class="code-fn">df</span>[<span class="code-str">'subscribed'</span>] = <span class="code-fn">df</span>[<span class="code-str">'subscribed'</span>].<span class="code-fn">astype</span>(<span class="code-kw">int</span>)</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TECHNIQUE 2: BINARY ENCODING -->
+  <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Binary Encoding — For High Cardinality</div><div class="section-divider-line"></div></div>
+
+  <div class="technique fade-up-3">
+    <div class="tech-header">
+      <div class="tech-icon" style="background:var(--nom-lt)">🔢</div>
+      <div>
+        <div class="tech-name">Binary Encoding</div>
+        <div class="tech-sub">Compact representation using binary digits — for high-cardinality nominal features</div>
+      </div>
+    </div>
+    <div class="tech-body">
+      <div class="callout warn">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <div class="callout-title">Important Distinction</div>
+          <p>Binary Encoding is <strong>not just for binary features</strong>. Despite the name, it's a technique for encoding <strong>high-cardinality nominal features</strong> using binary bit representation. It dramatically reduces the number of columns compared to One-Hot Encoding.</p>
+        </div>
+      </div>
+      <div class="tech-2col" style="margin-top:16px">
+        <div>
+          <div class="tech-label">How It Works</div>
+          <div class="tech-text">
+            <p><strong>Step 1:</strong> Assign each category an integer index (like Label Encoding)</p>
+            <p><strong>Step 2:</strong> Convert that integer to its binary representation</p>
+            <p><strong>Step 3:</strong> Split the binary bits into separate columns</p>
+          </div>
+          <div class="tech-label" style="margin-top:14px">Visual Example</div>
+          <div class="code-block"><pre><span class="code-comment"># 8 categories → 3 binary columns (log₂8=3)</span>
+Category   → Index → Binary → Col1 Col2 Col3
+Dog        →   1   →  001   →   0    0    1
+Cat        →   2   →  010   →   0    1    0
+Bird       →   3   →  011   →   0    1    1
+Fish       →   4   →  100   →   1    0    0
+Hamster    →   5   →  101   →   1    0    1
+Rabbit     →   6   →  110   →   1    1    0
+Parrot     →   7   →  111   →   1    1    1
+Turtle     →   8   → 1000   →  +1 col needed</pre></div>
+          <div class="chips" style="margin-top:8px">
+            <span class="chip chip-pro">✓ log₂(N) columns vs N for OHE</span>
+            <span class="chip chip-con">✗ Not interpretable</span>
+          </div>
+        </div>
+        <div>
+          <div class="tech-label">When to Use Binary Encoding</div>
+          <div class="tech-text">
+            <p>• Nominal feature with <strong>15–1000 unique values</strong></p>
+            <p>• Using a <strong>linear model</strong> (where OHE explodes dimensions)</p>
+            <p>• Memory or compute is a constraint</p>
+            <p>• Interpretability is not required</p>
+          </div>
+          <div class="tech-label" style="margin-top:14px">Code</div>
+          <div class="code-block"><pre><span class="code-kw">import</span> category_encoders <span class="code-kw">as</span> ce
+
+encoder = ce.<span class="code-fn">BinaryEncoder</span>(
+    cols=[<span class="code-str">'product_category'</span>]
+)
+df_encoded = encoder.<span class="code-fn">fit_transform</span>(df)
+
+<span class="code-comment"># 500 categories → only 9 columns</span>
+<span class="code-comment"># (vs 500 with OHE)</span></pre></div>
+          <div class="chips">
+            <span class="chip chip-pro">✓ High cardinality</span>
+            <span class="chip chip-pro">✓ Linear models</span>
+            <span class="chip chip-con">✗ Collisions possible</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONTENT — ORDINAL
+// ═══════════════════════════════════════════════════════════
+function buildOrdinal() {
+  return `
+<div class="sec-hero fade-up">
+  <div class="sec-hero-tag" style="color:var(--ord)">⬤ Ordinal Encoding</div>
+  <h1 class="sec-hero-title">Ordinal &amp; Label Encoding</h1>
+  <div class="sec-hero-desc">Ordinal features have a natural, meaningful rank. The encoding must reflect that order — using the wrong method introduces false assumptions that mislead the model.</div>
+</div>
+<div class="sec-body">
+
+  <div class="technique fade-up-1">
+    <div class="tech-header">
+      <div class="tech-icon" style="background:var(--ord-lt)">📶</div>
+      <div>
+        <div class="tech-name">Ordinal Encoding</div>
+        <div class="tech-sub">Assign integers that respect the natural meaningful order</div>
+      </div>
+    </div>
+    <div class="tech-body">
+      <div class="tech-2col">
+        <div>
+          <div class="tech-label">What It Does</div>
+          <div class="tech-text">
+            <p>Maps each category to an integer where the number reflects the category's rank in the natural ordering. The order you define directly determines how the model interprets the feature.</p>
+            <p><strong>Examples of ordinal features:</strong></p>
+            <p>• Size: Small &lt; Medium &lt; Large &lt; XL</p>
+            <p>• Education: High School &lt; Bachelor's &lt; Master's &lt; PhD</p>
+            <p>• Rating: Poor &lt; Average &lt; Good &lt; Excellent</p>
+            <p>• Risk: Low &lt; Medium &lt; High &lt; Critical</p>
+          </div>
+          <div class="chips">
+            <span class="chip chip-pro">✓ Preserves meaningful order</span>
+            <span class="chip chip-pro">✓ Single column</span>
+            <span class="chip chip-pro">✓ Linear models benefit</span>
+            <span class="chip chip-con">✗ Assumes equal intervals</span>
+          </div>
+        </div>
+        <div>
+          <div class="tech-label">Code — Define Order Explicitly</div>
+          <div class="code-block"><pre><span class="code-kw">from</span> sklearn.preprocessing <span class="code-kw">import</span> OrdinalEncoder
+
+<span class="code-comment"># Always define the order explicitly</span>
+encoder = <span class="code-fn">OrdinalEncoder</span>(
+    categories=[[
+        <span class="code-str">'Small'</span>, <span class="code-str">'Medium'</span>,
+        <span class="code-str">'Large'</span>, <span class="code-str">'XL'</span>
+    ]]
+)
+
+df[<span class="code-str">'size_enc'</span>] = encoder.<span class="code-fn">fit_transform</span>(
+    df[[<span class="code-str">'size'</span>]]
+)
+<span class="code-comment"># Small→0, Medium→1, Large→2, XL→3</span>
+
+<span class="code-comment"># Or manually with a mapping dict</span>
+order_map = {<span class="code-str">'Small'</span>:<span class="code-num">0</span>, <span class="code-str">'Medium'</span>:<span class="code-num">1</span>,
+             <span class="code-str">'Large'</span>:<span class="code-num">2</span>, <span class="code-str">'XL'</span>:<span class="code-num">3</span>}
+df[<span class="code-str">'size_enc'</span>] = df[<span class="code-str">'size'</span>].<span class="code-fn">map</span>(order_map)</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="technique fade-up-2">
+    <div class="tech-header">
+      <div class="tech-icon" style="background:var(--bin-lt)">🏷️</div>
+      <div>
+        <div class="tech-name">Label Encoding</div>
+        <div class="tech-sub">Assigns integers arbitrarily — use carefully</div>
+      </div>
+    </div>
+    <div class="tech-body">
+      <div class="tech-2col">
+        <div>
+          <div class="tech-label">What It Does</div>
+          <div class="tech-text">
+            <p>Label Encoding converts each unique category to an integer, typically in alphabetical or appearance order. It does <strong>not</strong> respect any natural ordering.</p>
+            <p>For the column [Poor, Good, Excellent, Average]:</p>
+            <p>• LabelEncoder might produce: Average=0, Excellent=1, Good=2, Poor=3</p>
+            <p>• This implies Poor &gt; Good — the opposite of reality!</p>
+          </div>
+          <div class="callout danger" style="margin-top:12px">
+            <div class="callout-icon">🚨</div>
+            <div class="callout-body">
+              <div class="callout-title">Don't use Label Encoding on ordinal features</div>
+              <p>The arbitrary integer assignment misleads linear and distance-based models. Use it only on the <strong>target variable</strong>, not input features.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="tech-label">Code</div>
+          <div class="code-block"><pre><span class="code-kw">from</span> sklearn.preprocessing <span class="code-kw">import</span> LabelEncoder
+
+le = <span class="code-fn">LabelEncoder</span>()
+
+<span class="code-comment"># ✅ OK — for target variable (y)</span>
+y_encoded = le.<span class="code-fn">fit_transform</span>(y)
+
+<span class="code-comment"># ❌ RISKY — for ordinal features</span>
+<span class="code-comment"># Assigns arbitrary integers</span>
+df[<span class="code-str">'rating_enc'</span>] = le.<span class="code-fn">fit_transform</span>(
+    df[<span class="code-str">'rating'</span>]
+)
+<span class="code-comment"># Poor→3, Average→0, Good→2,</span>
+<span class="code-comment"># Excellent→1  ← WRONG ORDER!</span></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIFFERENCE TABLE -->
+  <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Ordinal vs Label — Key Differences</div><div class="section-divider-line"></div></div>
+
+  <div class="vs-box fade-up-3">
+    <h3 style="font-family:'Fraunces',serif;font-size:18px;color:var(--navy);margin-bottom:4px">Ordinal Encoding vs Label Encoding</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:0">When to use each and what to watch for</p>
+    <div class="vs-grid">
+      <div class="vs-col" style="background:var(--ord-lt);border:1px solid var(--ord-md)">
+        <div class="vs-col-title" style="color:var(--ord)">✅ ORDINAL ENCODING</div>
+        <div class="vs-item"><div class="vs-dot" style="background:var(--ord)"></div><span>You define the explicit order of categories</span></div>
+        <div class="vs-item"><div class="vs-dot" style="background:var(--ord)"></div><span>Preserves real-world rank relationships</span></div>
+        <div class="vs-item"><div class="vs-dot" style="background:var(--ord)"></div><span>Works correctly with linear &amp; tree models</span></div>
+        <div class="vs-item"><div class="vs-dot" style="background:var(--ord)"></div><span>Use for: Size, Education, Rating, Risk level</span></div>
+        <div class="vs-item"><div class="vs-dot" style="background:var(--ord)"></div><span>From sklearn: <code style="background:rgba(255,255,255,.7);padding:2px 5px;border-radius:3px">OrdinalEncoder(categories=[...])</code></span></div>
+      </div>
+      <div class="vs-col" style="background:var(--bin-lt);border:1px solid var(--bin-md)">
+        <div class="vs-col-title" style="color:var(--warn)">⚠️ LABEL ENCODING</div>
+        <div class="vs-item"><div class="vs-dot" style="background:var(--warn)"></div><span>Order is assigned alphabetically or randomly</span></div>
+        <div class="vs-item"><div class="vs-dot" style="background:var(--warn)"></div><span>Does NOT preserve meaningful order</span></div>
+        <div class="vs-item"><div class="vs-dot" style="background:var(--warn)"></div><span>Safe only for <strong>target variable</strong> encoding</span></div>
+        <div class="vs-item"><div class="vs-dot" style="background:var(--warn)"></div><span>Tree models can tolerate it on features (they learn splits, not magnitude)</span></div>
+        <div class="vs-item"><div class="vs-dot" style="background:var(--warn)"></div><span>Dangerous for linear models on features with order</span></div>
+      </div>
+    </div>
+    <div class="callout success" style="margin-top:16px">
+      <div class="callout-icon">🎯</div>
+      <div class="callout-body">
+        <div class="callout-title">Practical Rule</div>
+        <p>If the feature has a natural order → <strong>always use OrdinalEncoder with explicit categories</strong>. Reserve LabelEncoder for encoding the target variable (y) in classification tasks. When in doubt, define the order yourself.</p>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONTENT — NOMINAL
+// ═══════════════════════════════════════════════════════════
+function buildNominal() {
+  return `
+<div class="sec-hero fade-up">
+  <div class="sec-hero-tag" style="color:var(--nom)">⬤ Nominal Encoding</div>
+  <h1 class="sec-hero-title">Nominal Feature Encoding</h1>
+  <div class="sec-hero-desc">Nominal features have no natural order — Color, City, Product Category. The right encoding depends on cardinality. Low cardinality and high cardinality require completely different strategies.</div>
+</div>
+<div class="sec-body">
+
+  <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Low Cardinality — Fewer Than 10–15 Unique Values</div><div class="section-divider-line"></div></div>
+
+  <!-- OHE -->
+  <div class="technique fade-up-1">
+    <div class="tech-header">
+      <div class="tech-icon" style="background:var(--nom-lt)">🔲</div>
+      <div>
+        <div class="tech-name">One-Hot Encoding (OHE)</div>
+        <div class="tech-sub">Create a binary column for each category — the standard for low cardinality</div>
+      </div>
+    </div>
+    <div class="tech-body">
+      <div class="tech-2col">
+        <div>
+          <div class="tech-label">How It Works</div>
+          <div class="tech-text">
+            <p>Each unique category becomes a new binary column. For a row, only that category's column is 1 — all others are 0. No ordinal assumption is introduced.</p>
+            <p><strong>Example:</strong> Color [Red, Blue, Green] →</p>
+          </div>
+          <div class="code-block"><pre><span class="code-comment"># Original</span>
+Color:  Red  Blue  Green
+
+<span class="code-comment"># After OHE</span>
+Color_Red  Color_Blue  Color_Green
+    1          0           0     <span class="code-comment"># Red row</span>
+    0          1           0     <span class="code-comment"># Blue row</span>
+    0          0           1     <span class="code-comment"># Green row</span></pre></div>
+          <div class="chips" style="margin-top:10px">
+            <span class="chip chip-pro">✓ No false order</span>
+            <span class="chip chip-pro">✓ All models</span>
+            <span class="chip chip-con">✗ N columns created</span>
+            <span class="chip chip-con">✗ Dummy variable trap</span>
+          </div>
+        </div>
+        <div>
+          <div class="tech-label">Code</div>
+          <div class="code-block"><pre><span class="code-comment"># pandas</span>
+df_enc = pd.<span class="code-fn">get_dummies</span>(
+    df, columns=[<span class="code-str">'color'</span>],
+    drop_first=<span class="code-kw">True</span>  <span class="code-comment"># avoid multicollinearity</span>
+)
+
+<span class="code-comment"># sklearn</span>
+<span class="code-kw">from</span> sklearn.preprocessing <span class="code-kw">import</span> OneHotEncoder
+enc = <span class="code-fn">OneHotEncoder</span>(
+    drop=<span class="code-str">'first'</span>,    <span class="code-comment"># for linear models</span>
+    sparse_output=<span class="code-kw">False</span>
+)
+enc.<span class="code-fn">fit_transform</span>(df[[<span class="code-str">'color'</span>]])</pre></div>
+          <div class="callout info" style="margin-top:12px">
+            <div class="callout-icon">💡</div>
+            <div class="callout-body">
+              <div class="callout-title">Dummy Variable Trap</div>
+              <p>With linear models, N columns from OHE are perfectly collinear — drop one (drop_first=True). Tree models don't need this.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">High Cardinality — 15+ Unique Values</div><div class="section-divider-line"></div></div>
+
+  <!-- FREQUENCY ENCODING -->
+  <div class="technique fade-up-2">
+    <div class="tech-header">
+      <div class="tech-icon" style="background:var(--primary-lt)">📊</div>
+      <div>
+        <div class="tech-name">Frequency Encoding</div>
+        <div class="tech-sub">Replace each category with how often it appears — safe, compact, no leakage</div>
+      </div>
+    </div>
+    <div class="tech-body">
+      <div class="tech-2col">
+        <div>
+          <div class="tech-label">How It Works</div>
+          <div class="tech-text">
+            <p>Replace each category with its count or proportion in the dataset. Frequent categories get higher values. Rare ones get lower values.</p>
+            <p>The frequency itself often carries useful signal — a rare city might behave differently from a common one.</p>
+          </div>
+          <div class="chips">
+            <span class="chip chip-pro">✓ No data leakage</span>
+            <span class="chip chip-pro">✓ 1 column output</span>
+            <span class="chip chip-pro">✓ Handles unseen</span>
+            <span class="chip chip-con">✗ Different categories same frequency</span>
+          </div>
+        </div>
+        <div>
+          <div class="tech-label">Code</div>
+          <div class="code-block"><pre><span class="code-comment"># Frequency encoding (proportion)</span>
+freq_map = df[<span class="code-str">'city'</span>].<span class="code-fn">value_counts</span>(
+    normalize=<span class="code-kw">True</span>
+)
+df[<span class="code-str">'city_freq'</span>] = df[<span class="code-str">'city'</span>].<span class="code-fn">map</span>(freq_map)
+
+<span class="code-comment"># Count encoding (raw count)</span>
+count_map = df[<span class="code-str">'city'</span>].<span class="code-fn">value_counts</span>()
+df[<span class="code-str">'city_count'</span>] = df[<span class="code-str">'city'</span>].<span class="code-fn">map</span>(count_map)</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TARGET ENCODING -->
+  <div class="technique fade-up-3">
+    <div class="tech-header">
+      <div class="tech-icon" style="background:#fef3c7)">🎯</div>
+      <div>
+        <div class="tech-name">Target Encoding</div>
+        <div class="tech-sub">Replace each category with the mean target — powerful but requires careful handling</div>
+      </div>
+    </div>
+    <div class="tech-body">
+      <div class="tech-2col">
+        <div>
+          <div class="tech-label">How It Works</div>
+          <div class="tech-text">
+            <p>Replace each category with the <strong>mean of the target variable</strong> for rows belonging to that category. If City = "Mumbai" and 70% of Mumbai customers churned, Mumbai → 0.70.</p>
+            <p>Captures direct category-to-target relationships that frequency encoding misses.</p>
+          </div>
+          <div class="tech-label" style="margin-top:14px">When to Use</div>
+          <div class="tech-text">
+            <p>• High cardinality nominal + strong category-target relationship</p>
+            <p>• Tree-based models (XGBoost, LightGBM handle it well)</p>
+            <p>• <strong>Always</strong> with k-fold cross-validation</p>
+          </div>
+          <div class="chips">
+            <span class="chip chip-pro">✓ Very powerful signal</span>
+            <span class="chip chip-pro">✓ 1 column</span>
+            <span class="chip chip-con">✗ Leakage if done wrong</span>
+            <span class="chip chip-con">✗ Rare category instability</span>
+          </div>
+        </div>
+        <div>
+          <div class="tech-label">Code — Safe with Cross-Validation</div>
+          <div class="code-block"><pre><span class="code-kw">import</span> category_encoders <span class="code-kw">as</span> ce
+
+<span class="code-comment"># ✅ SAFE: uses cross-validation internally</span>
+encoder = ce.<span class="code-fn">TargetEncoder</span>(
+    cols=[<span class="code-str">'city'</span>],
+    smoothing=<span class="code-num">1.0</span>  <span class="code-comment"># blend rare cats w/ global mean</span>
+)
+
+<span class="code-comment"># Must be done inside CV folds</span>
+<span class="code-kw">from</span> sklearn.model_selection <span class="code-kw">import</span> cross_val_score
+<span class="code-kw">from</span> sklearn.pipeline <span class="code-kw">import</span> <span class="code-fn">Pipeline</span>
+
+pipe = <span class="code-fn">Pipeline</span>([
+    (<span class="code-str">'enc'</span>, encoder),
+    (<span class="code-str">'model'</span>, model)
+])
+<span class="code-fn">cross_val_score</span>(pipe, X, y, cv=<span class="code-num">5</span>)</pre></div>
+        </div>
+      </div>
+
+      <!-- TARGET ENCODING ISSUES -->
+      <div class="section-divider" style="margin-top:20px"><div class="section-divider-line"></div><div class="section-divider-label" style="color:var(--drop)">Issues With Target Encoding</div><div class="section-divider-line"></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div class="callout danger">
+          <div>
+            <div class="callout-body">
+              <div class="callout-title" style="color:var(--drop)">🚨 Data Leakage</div>
+              <p>Computing target mean using ALL rows (including the row being encoded) leaks the answer into the feature. The model memorizes target values disguised as features.</p>
+              <p style="margin-top:8px;font-weight:700;font-size:12px">Fix: Use k-fold CV encoding — encode fold N using only data from other folds.</p>
+            </div>
+          </div>
+        </div>
+        <div class="callout warn">
+          <div>
+            <div class="callout-body">
+              <div class="callout-title" style="color:var(--warn)">⚠️ Rare Category Instability</div>
+              <p>A category with only 1–2 rows has a completely unstable mean. If that one row has target=1, the entire category encodes as 1.0 — pure noise.</p>
+              <p style="margin-top:8px;font-weight:700;font-size:12px">Fix: Apply smoothing — blend the category mean with the global mean based on sample size.</p>
+            </div>
+          </div>
+        </div>
+        <div class="callout info">
+          <div>
+            <div class="callout-body">
+              <div class="callout-title" style="color:var(--primary)">💡 Overfitting Risk</div>
+              <p>Without cross-validation, target encoding produces a model that scores perfectly in training but fails in production — a classic sign of leakage-driven overfitting.</p>
+              <p style="margin-top:8px;font-weight:700;font-size:12px">Fix: Validate out-of-fold. Metrics on encoded training data should be treated with suspicion.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONTENT — EMBEDDINGS
+// ═══════════════════════════════════════════════════════════
+function buildEmbeddings() {
+  return `
+<div class="sec-hero fade-up">
+  <div class="sec-hero-tag" style="color:var(--emb)">⬤ Embeddings</div>
+  <h1 class="sec-hero-title">Learned Embeddings</h1>
+  <div class="sec-hero-desc">Embeddings go beyond fixed encoding rules. Instead of hand-crafting representations, the model <em>learns</em> the best dense vector for each category through training — capturing semantic relationships no manual encoding can achieve.</div>
+</div>
+<div class="sec-body">
+
+  <div class="technique fade-up-1">
+    <div class="tech-header">
+      <div class="tech-icon" style="background:var(--emb-lt)">🧠</div>
+      <div>
+        <div class="tech-name">What Are Embeddings?</div>
+        <div class="tech-sub">Dense vector representations learned from data</div>
+      </div>
+    </div>
+    <div class="tech-body">
+      <div class="tech-2col">
+        <div>
+          <div class="tech-label">The Core Idea</div>
+          <div class="tech-text">
+            <p>Instead of a sparse 1-of-N vector (like OHE), an embedding maps each category to a <strong>dense vector of k real numbers</strong> — where k is much smaller than N.</p>
+            <p>These vectors are <strong>learned during training</strong>. Categories that behave similarly in relation to the target end up with similar vectors — a property no static encoding provides.</p>
+          </div>
+          <div class="code-block" style="margin-top:12px"><pre><span class="code-comment"># OHE: 10,000 products → 10,000 sparse binary columns
+# Embedding: 10,000 products → 50 dense float columns
+
+Product 1234 → OHE:  [0,0,1,0,...,0]  (10,000 dims)
+Product 1234 → Emb:  [0.42, -0.18, 0.73, ...]  (50 dims)</span></pre></div>
+        </div>
+        <div>
+          <div class="tech-label">Why They're Powerful</div>
+          <div class="tech-text">
+            <p>• <strong>Semantic similarity:</strong> iPhone and Samsung appear close in embedding space if they behave similarly as features</p>
+            <p>• <strong>Compact:</strong> k=50 dimensions instead of 50,000 OHE columns</p>
+            <p>• <strong>Learnable:</strong> The embedding captures the exact relationships relevant to your prediction task</p>
+            <p>• <strong>Handles unseen:</strong> Embedding layers handle out-of-vocabulary categories gracefully</p>
+          </div>
+          <div class="chips">
+            <span class="chip chip-pro">✓ Semantic relationships</span>
+            <span class="chip chip-pro">✓ Any cardinality</span>
+            <span class="chip chip-pro">✓ Compact</span>
+            <span class="chip chip-con">✗ Needs neural network</span>
+            <span class="chip chip-con">✗ Not interpretable</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="technique fade-up-2">
+    <div class="tech-header">
+      <div class="tech-icon" style="background:var(--primary-lt)">🔢</div>
+      <div>
+        <div class="tech-name">Entity Embeddings for Tabular Data</div>
+        <div class="tech-sub">Learned representations for categorical columns in structured data</div>
+      </div>
+    </div>
+    <div class="tech-body">
+      <div class="tech-2col">
+        <div>
+          <div class="tech-label">When to Use</div>
+          <div class="tech-text">
+            <p>• <strong>Very high cardinality:</strong> User IDs, Product IDs, ZIP codes (100k+ unique values)</p>
+            <p>• <strong>Deep learning model:</strong> You're using Keras, PyTorch, or FastAI</p>
+            <p>• <strong>NLP:</strong> Word/token sequences (Word2Vec, GloVe, BERT embeddings)</p>
+            <p>• <strong>Recommendation systems:</strong> User and item embeddings</p>
+          </div>
+          <div class="callout info" style="margin-top:12px">
+            <div class="callout-icon">💡</div>
+            <div class="callout-body">
+              <div class="callout-title">Embedding Dimension Rule of Thumb</div>
+              <p>k ≈ min(50, (N+1) / 2) where N is the number of unique categories. For 1,000 categories, k ≈ 50 is typically sufficient.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="tech-label">Code — Keras Embedding Layer</div>
+          <div class="code-block"><pre><span class="code-kw">import</span> tensorflow <span class="code-kw">as</span> tf
+
+n_categories = <span class="code-num">10000</span>  <span class="code-comment"># unique products</span>
+embed_dim    = <span class="code-num">50</span>     <span class="code-comment"># embedding size</span>
+
+<span class="code-comment"># Input: integer-encoded product IDs</span>
+inp = tf.keras.layers.<span class="code-fn">Input</span>(shape=(<span class="code-num">1</span>,))
+emb = tf.keras.layers.<span class="code-fn">Embedding</span>(
+    input_dim=n_categories,
+    output_dim=embed_dim
+)(inp)
+flat = tf.keras.layers.<span class="code-fn">Flatten</span>()(emb)
+
+<span class="code-comment"># Continue with dense layers...</span>
+out  = tf.keras.layers.<span class="code-fn">Dense</span>(<span class="code-num">1</span>, activation=<span class="code-str">'sigmoid'</span>)(flat)</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="technique fade-up-3">
+    <div class="tech-header">
+      <div class="tech-icon" style="background:var(--nom-lt)">📝</div>
+      <div>
+        <div class="tech-name">Pre-Trained Word Embeddings (NLP)</div>
+        <div class="tech-sub">Word2Vec, GloVe, FastText, BERT — for text features</div>
+      </div>
+    </div>
+    <div class="tech-body">
+      <div class="tech-2col">
+        <div>
+          <div class="tech-label">Key Embedding Types</div>
+          <div class="tech-text">
+            <p>• <strong>Word2Vec:</strong> Predicts surrounding words — similar context = similar vector. Good for semantic similarity.</p>
+            <p>• <strong>GloVe:</strong> Global co-occurrence statistics — captures word relationships across large corpora.</p>
+            <p>• <strong>FastText:</strong> Subword-level — handles morphology and out-of-vocabulary words.</p>
+            <p>• <strong>BERT / Transformer embeddings:</strong> Contextual — the same word gets different vectors in different contexts. State-of-the-art for NLP.</p>
+          </div>
+        </div>
+        <div>
+          <div class="tech-label">When NOT to Use Embeddings</div>
+          <div class="tech-text">
+            <p>• Small datasets — not enough data for the model to learn useful representations</p>
+            <p>• Traditional ML models (Random Forest, XGBoost) — they can't use embedding layers natively</p>
+            <p>• When interpretability is required — embedding dimensions have no human-readable meaning</p>
+            <p>• Low or medium cardinality — OHE or frequency encoding is simpler and works just as well</p>
+          </div>
+          <div class="callout success" style="margin-top:12px">
+            <div class="callout-icon">🎯</div>
+            <div class="callout-body">
+              <div class="callout-title">Summary Rule</div>
+              <p>Use embeddings when cardinality is very high <strong>and</strong> you're building a neural network. For traditional ML pipelines, frequency or binary encoding is more practical.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// BUILD OVERVIEW
+// ═══════════════════════════════════════════════════════════
+function buildOverview() {
+  return `
+<div class="hero fade-up">
+  <div class="hero-tag">Data Science · Session Guide</div>
+  <h1 class="hero-title">Feature <em>Encoding</em></h1>
+  <div class="hero-desc">Machine learning models speak numbers. Encoding is how we translate categorical features into a language models understand — without introducing false assumptions, leakage, or unnecessary complexity.</div>
+</div>
+<div class="body-pad">
+  <div class="why-box fade-up-1">
+    <h2>Why Encoding Matters</h2>
+    <p>Most real-world datasets contain categorical features — Gender, City, Product Category, Education Level, Size. Models cannot process these as text strings. Encoding converts them to numbers so models can train.</p>
+    <p>But encoding is not just a translation step. The <strong>wrong encoding introduces false ordinal relationships</strong>, creates <strong>data leakage</strong>, causes <strong>dimensional explosion</strong>, or loses signal entirely. The right encoding depends on three things: the type of feature (binary, ordinal, nominal), its cardinality (how many unique values), and the model you're using.</p>
+    <p>This guide covers all four encoding contexts — with decision frameworks, technique comparisons, and scenario-based quizzes to solidify understanding.</p>
+  </div>
+  <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:16px">Four Encoding Contexts — Click to Explore</div>
+  <div class="ov-cards-grid fade-up-2">
+    <div class="ov-card bin" onclick="goTopic('binary')">
+      <div>
+        <div class="ov-card-num">01 · Binary</div>
+        <div class="ov-card-emoji">🔀</div>
+        <div class="ov-card-title">Binary Features</div>
+        <div class="ov-card-desc">Yes/No, Male/Female, True/False. Direct 0/1 mapping + Binary Encoding for high cardinality</div>
+      </div>
+      <div class="ov-card-arrow">↗</div>
+    </div>
+    <div class="ov-card ord" onclick="goTopic('ordinal')">
+      <div>
+        <div class="ov-card-num">02 · Ordinal</div>
+        <div class="ov-card-emoji">📶</div>
+        <div class="ov-card-title">Ordinal Encoding</div>
+        <div class="ov-card-desc">Low &lt; Medium &lt; High. Ordinal vs Label encoding — a critical difference to understand</div>
+      </div>
+      <div class="ov-card-arrow">↗</div>
+    </div>
+    <div class="ov-card nom" onclick="goTopic('nominal')">
+      <div>
+        <div class="ov-card-num">03 · Nominal</div>
+        <div class="ov-card-emoji">🏷️</div>
+        <div class="ov-card-title">Nominal Encoding</div>
+        <div class="ov-card-desc">OHE for low cardinality, Frequency &amp; Target encoding for high — and why Target encoding is risky</div>
+      </div>
+      <div class="ov-card-arrow">↗</div>
+    </div>
+    <div class="ov-card emb" onclick="goTopic('embeddings')">
+      <div>
+        <div class="ov-card-num">04 · Embeddings</div>
+        <div class="ov-card-emoji">🧠</div>
+        <div class="ov-card-title">Embeddings</div>
+        <div class="ov-card-desc">Dense learned representations for very high cardinality and neural networks</div>
+      </div>
+      <div class="ov-card-arrow">↗</div>
+    </div>
+  </div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// BUILD DECISION TREE
+// ═══════════════════════════════════════════════════════════
+function buildTree() {
+  const ts   = S.tree;
+  const node = TREE.nodes[ts.cur];
+
+  const crumbs = ts.hist.map((h, i) =>
+    `<span class="bc-item">Q${i+1}: <span class="${h.a==='Yes'?'bc-yes':'bc-no'}">${h.a}</span></span>`
+  ).join('');
+
+  let cls = 'tree-node', body = '';
+  if (!node.result) {
+    const yLabel = node.yesLabel || 'Yes';
+    const nLabel = node.noLabel  || 'No';
+    body = `
+      <div class="tree-step-num">Step ${ts.hist.length + 1}</div>
+      <div class="tree-question">${node.q}</div>
+      <div class="tree-hint">💡 ${node.hint}</div>
+      <div class="tree-actions">
+        <button class="tree-btn yes" onclick="treeGo('${node.yes}','Yes')">✓ ${yLabel}</button>
+        <button class="tree-btn no"  onclick="treeGo('${node.no}','No')">✗ ${nLabel}</button>
+      </div>`;
+  } else {
+    cls += ' ' + node.cls;
+    body = `
+      <div class="tree-result-label">Recommendation</div>
+      <div class="tree-result-title">${node.verdict}</div>
+      <div class="tree-result-msg">${node.msg}</div>
+      <span class="result-badge ${node.badge}">${node.verdict}</span>`;
+  }
+
+  const backBtn = ts.hist.length
+    ? `<button class="tree-ctrl" onclick="treeBack()">← Back</button>` : '';
+
+  return `
+<div class="sec-hero">
+  <div class="sec-hero-tag" style="color:var(--primary)">Interactive Tool</div>
+  <h1 class="sec-hero-title">Encoding Decision Tree</h1>
+  <div class="sec-hero-desc">Answer yes/no questions about your feature to get the right encoding recommendation. Walk through this live with your class.</div>
+</div>
+<div class="sec-body">
+  <div class="tree-wrap">
+    <div class="tree-breadcrumb">${crumbs || '<span style="font-size:12px;color:var(--faint);padding:4px 0">Start answering to build your path here...</span>'}</div>
+    <div class="${cls} fade-up">${body}</div>
+    <div class="tree-controls">
+      ${backBtn}
+      <button class="tree-ctrl" onclick="treeReset()">↺ Restart</button>
+    </div>
+  </div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// BUILD COMPARISON
+// ═══════════════════════════════════════════════════════════
+function buildCompare() {
+  const tcColor = { bin:'var(--bin)', ord:'var(--ord)', nom:'var(--nom)', emb:'var(--emb)' };
+  const rows = COMPARE_ROWS.map(r => `
+    <div class="cmp-row" style="grid-template-columns:${COMPARE_COLS}">
+      <div class="cmp-tech" style="display:flex;align-items:center;gap:8px">
+        <span style="width:6px;height:6px;border-radius:50%;background:${tcColor[r.tc]};display:inline-block;flex-shrink:0"></span>${r.tech}
+      </div>
+      <div class="cmp-cell"><span class="pill pill-n">${r.type}</span></div>
+      <div class="cmp-cell">${r.hi}</div>
+      <div class="cmp-cell">${r.ord}</div>
+      <div class="cmp-cell">${r.leak.includes('High') ? '<span class="pill pill-h">'+r.leak+'</span>' : r.leak.includes('Low') ? '<span class="pill pill-m">'+r.leak+'</span>' : '<span class="pill pill-l">'+r.leak+'</span>'}</div>
+      <div class="cmp-cell muted">${r.dims}</div>
+      <div class="cmp-cell muted" style="font-size:11px">${r.best}</div>
+    </div>`).join('');
+
+  const head = `<div class="cmp-row head" style="grid-template-columns:${COMPARE_COLS}">
+    ${COMPARE_HEADS.map(h=>`<div class="cmp-hdr">${h}</div>`).join('')}
+  </div>`;
+
+  return `
+<div class="sec-hero">
+  <div class="sec-hero-tag" style="color:var(--primary)">Reference</div>
+  <h1 class="sec-hero-title">Technique Comparison</h1>
+  <div class="sec-hero-desc">All encoding techniques side by side. Use this as a quick reference during feature engineering decisions.</div>
+</div>
+<div class="sec-body">
+  <div class="cmp-table fade-up">${head}${rows}</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px" class="fade-up-1">
+    <div style="padding:12px;background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--bin);border-radius:10px;font-size:12px">
+      <strong style="color:var(--bin)">Binary</strong><br><span style="color:var(--muted)">Always 0/1 map for 2-value features first</span>
+    </div>
+    <div style="padding:12px;background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--ord);border-radius:10px;font-size:12px">
+      <strong style="color:var(--ord)">Ordinal</strong><br><span style="color:var(--muted)">Define order explicitly, never rely on Label Encoder for features</span>
+    </div>
+    <div style="padding:12px;background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--nom);border-radius:10px;font-size:12px">
+      <strong style="color:var(--nom)">Nominal</strong><br><span style="color:var(--muted)">OHE for low card, Frequency as baseline for high card</span>
+    </div>
+    <div style="padding:12px;background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--emb);border-radius:10px;font-size:12px">
+      <strong style="color:var(--emb)">Embeddings</strong><br><span style="color:var(--muted)">Only with neural nets, very high cardinality</span>
+    </div>
+  </div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// BUILD QUIZ
+// ═══════════════════════════════════════════════════════════
+function buildQuiz() {
+  const qst = S.quiz;
+  const answered = Object.keys(qst.ans).length;
+  const allDone  = answered === QUIZ.length;
+  const pct = Math.round((answered / QUIZ.length) * 100);
+
+  if (qst.done) {
+    const score = QUIZ.filter((q,i) => qst.ans[i] === q.ans).length;
+    const msg = score >= 9 ? 'Outstanding! 🏆' : score >= 7 ? 'Great work! 👏' : score >= 5 ? 'Good effort — review the explanations 📖' : 'Keep practicing — check the Decision Tree 🌳';
+    const cards = QUIZ.map((q, qi) => {
+      const opts = q.opts.map((opt, oi) => {
+        let cls = '';
+        if (oi === q.ans) cls = 'correct';
+        else if (qst.ans[qi] === oi) cls = 'wrong';
+        const mark = oi===q.ans ? '✓' : qst.ans[qi]===oi ? '✗' : '○';
+        return `<button class="q-opt ${cls}" disabled><span class="q-marker">${mark}</span>${opt}</button>`;
+      }).join('');
+      return `<div class="q-card"><div class="q-number">Q${qi+1}</div><div class="q-text">${q.q}</div><div class="q-opts">${opts}</div><div class="q-explain">${q.exp}</div></div>`;
+    }).join('');
+    return `
+<div class="sec-hero">
+  <h1 class="sec-hero-title">Quiz Results</h1>
+</div>
+<div class="sec-body">
+  <div class="score-box fade-up">
+    <div class="score-big">${score}<span class="score-denom"> / ${QUIZ.length}</span></div>
+    <div class="score-msg">${msg}</div>
+    <button class="retry-btn" onclick="quizRetry()">Try Again</button>
+  </div>
+  <div class="fade-up-1">${cards}</div>
+</div>`;
+  }
+
+  const cards = QUIZ.map((q, qi) => {
+    const opts = q.opts.map((opt, oi) => {
+      const sel = qst.ans[qi] === oi;
+      return `<button class="q-opt ${sel?'selected':''}" onclick="quizSelect(${qi},${oi})"><span class="q-marker">${sel?'●':'○'}</span>${opt}</button>`;
+    }).join('');
+    return `<div class="q-card"><div class="q-number">Question ${qi+1} of ${QUIZ.length}</div><div class="q-text">${q.q}</div><div class="q-opts">${opts}</div></div>`;
+  }).join('');
+
+  return `
+<div class="sec-hero">
+  <div class="sec-hero-tag" style="color:var(--primary)">10 Questions</div>
+  <h1 class="sec-hero-title">Encoding Quiz</h1>
+  <div class="sec-hero-desc">Scenario-based questions covering all encoding types. Select your answers and submit when done.</div>
+</div>
+<div class="sec-body">
+  <div class="quiz-progress fade-up">
+    <div style="font-size:12px;font-weight:700;color:var(--text);white-space:nowrap">${answered} answered</div>
+    <div class="quiz-prog-bar"><div class="quiz-prog-fill" style="width:${pct}%"></div></div>
+    <div class="quiz-prog-text">${pct}%</div>
+  </div>
+  <div class="fade-up-1">${cards}</div>
+  <div class="quiz-footer fade-up-2">
+    <button class="submit-btn" onclick="quizSubmit()" ${allDone?'':'disabled'}>Submit ${QUIZ.length} Answers</button>
+    ${!allDone ? `<span style="font-size:12px;color:var(--muted);margin-left:14px">${QUIZ.length-answered} questions remaining</span>` : ''}
+  </div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// INTERACTION HANDLERS
+// ═══════════════════════════════════════════════════════════
+function treeGo(next, ans) {
+  S.tree.hist.push({ n: S.tree.cur, a: ans });
+  S.tree.cur = next;
+  render();
+}
+function treeBack() {
+  if (!S.tree.hist.length) return;
+  S.tree.cur = S.tree.hist.pop().n;
+  render();
+}
+function treeReset() {
+  S.tree = { cur: TREE.start, hist: [] };
+  render();
+}
+function quizSelect(qi, oi) {
+  if (S.quiz.done) return;
+  S.quiz.ans[qi] = oi;
+  render();
+}
+function quizSubmit() {
+  S.quiz.done = true;
+  render();
+}
+function quizRetry() {
+  S.quiz = { ans:{}, done:false };
+  render();
+}
+function setView(v) {
+  S.view = v;
+  render();
+}
+function goTopic(t) {
+  S.topic = t;
+  S.view  = 'content';
+  render();
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════
+function render() {
+  // Sidebar buttons
+  ['overview','tree','compare','quiz'].forEach(v => {
+    document.getElementById('sb-'+v)?.classList.toggle('active', S.view === v);
+  });
+
+  // Topic tabs
+  ['binary','ordinal','nominal','embeddings'].forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    if (el) el.classList.toggle('active', S.view === 'content' && S.topic === t);
+  });
+
+  // Topic bar visibility
+  document.getElementById('topic-bar').style.display = S.view === 'overview' ? 'none' : 'flex';
+
+  // Content
+  const el = document.getElementById('content');
+  let html = '';
+  if      (S.view === 'overview') html = buildOverview();
+  else if (S.view === 'tree')     html = buildTree();
+  else if (S.view === 'compare')  html = buildCompare();
+  else if (S.view === 'quiz')     html = buildQuiz();
+  else if (S.topic === 'binary')     html = buildBinary();
+  else if (S.topic === 'ordinal')    html = buildOrdinal();
+  else if (S.topic === 'nominal')    html = buildNominal();
+  else if (S.topic === 'embeddings') html = buildEmbeddings();
+  el.innerHTML = html;
+  el.scrollTop = 0;
+}
+
+render();
+</script>
+</body>
+</html>
